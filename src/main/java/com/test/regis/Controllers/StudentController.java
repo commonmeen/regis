@@ -15,6 +15,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
+@CrossOrigin
 public class StudentController {
     @Autowired
     StudentService studentService;
@@ -25,28 +26,43 @@ public class StudentController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<Object> createStudent(@RequestBody Student student){
-        studentService.save(student);
-        return new ResponseEntity(HttpStatus.OK);
+    public ResponseEntity<?> createStudent(@RequestBody Student student){
+        Student std = studentService.creatStudent(student);
+        return new ResponseEntity<Student>(std,HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Object> getStudent(@PathVariable(required = true) long id){
-        Optional<Student> std = studentService.getStudentById(id);
-        if(std.isPresent()){
-            return ResponseEntity.ok().body(std.get());
+    @GetMapping("/all")
+    public Iterable<Student> getAllStudent(){
+        return studentService.getAllStudent();
+    }
+
+    @GetMapping("/name/{name}")
+    public ResponseEntity<?> getStudentByName(@PathVariable String name){
+        Student std = studentService.getStudentByName(name);
+        if(std != null){
+            return new ResponseEntity<Student>(std,HttpStatus.OK);
         }else{
-            return new ResponseEntity("Can not find student id: "+id,HttpStatus.NOT_FOUND);
+            return new ResponseEntity<String>("Can not find student name: '"+name+"'",HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/id/{id}")
+    public ResponseEntity<?> getStudent(@PathVariable(required = true) long id){
+        Student std = studentService.getStudentById(id);
+        if(std != null){
+            return new ResponseEntity<Student>(std,HttpStatus.OK);
+        }else{
+            return new ResponseEntity<String>("Can not find student id: "+id,HttpStatus.NOT_FOUND);
         }
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Object> deleteStudent(@PathVariable(required = true) long id){
-        if(studentService.getStudentById(id).isPresent()){
+    public ResponseEntity<?> deleteStudent(@PathVariable(required = true) long id){
+        if(studentService.getStudentById(id) != null){
             studentService.delete(id);
-            return ResponseEntity.ok().build();
+            return new ResponseEntity<String>("Student id '"+"' is deleted",HttpStatus.OK);
         }else{
-            return new ResponseEntity("Can not find student id: "+id+" to delete",HttpStatus.NOT_FOUND);
+            return new ResponseEntity<String>("Can not find student id: "+id+" to delete",HttpStatus.NOT_FOUND);
         }
     }
 

@@ -16,16 +16,20 @@ public class StudentService {
     @Autowired
     StudentRepository studentRepository;
 
-    public void save(Student student){
-        studentRepository.save(student);
+    public Student creatStudent(Student student){
+        return studentRepository.save(student);
     }
 
-    public void update(long id , Student student){
-        studentRepository.save(student);
+    public Student getStudentById(long id) {
+        return studentRepository.getStudentById(id);
     }
 
-    public Optional<Student> getStudentById(long id) {
-        return studentRepository.findById(id);
+    public Student getStudentByName(String name){
+        return studentRepository.getStudentByName(name);
+    }
+
+    public Iterable<Student> getAllStudent(){
+        return studentRepository.findAll();
     }
 
     public void delete(long id){
