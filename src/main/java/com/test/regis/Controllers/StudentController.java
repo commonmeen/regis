@@ -66,6 +66,12 @@ public class StudentController {
         }
     }
 
+    @DeleteMapping("/delete/all")
+    public ResponseEntity<?> deleteAllStudent(){
+        studentService.deleteAll();
+        return new ResponseEntity<String>("Delete all student sucess",HttpStatus.OK);
+    }
+
 
 
 }
